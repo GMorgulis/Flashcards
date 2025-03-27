@@ -21,5 +21,6 @@ void home_checker();
 int make_new_set(char* name);
 int add_to_set(char* set_name, char* key, char* value);
 int remove_from_set(char* set_name, int num);
+int delete_set(char* set_name);
 
 #endif // FLASHCARDS_H

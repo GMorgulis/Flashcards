@@ -120,14 +120,22 @@ int remove_from_set(char* set_name, int num){
     strcat(set_name, ".csv");
     rename(dest, src);
 
-    return 1;
+    return 0;
+}
+
+int delete_set(char* set_name){
+    char src[1024];
+    snprintf(src, sizeof(src), "%s/%s", get_home_path(), set_name);
+    strcat(src, ".csv");
+    remove(src);
+    return 0;
 }
 
 int main (int argc, char** argv){
     int opt;
-    int a = 0, r = 0, c = 0;
+    int a = 0, r = 0, c = 0, d = 0;
 
-    while((opt = getopt(argc, argv, "arc")) != -1){
+    while((opt = getopt(argc, argv, "arcd")) != -1){
         switch(opt){
             case 'a':
             a++;
@@ -141,6 +149,10 @@ int main (int argc, char** argv){
             c++;
             break;
 
+            case'd':
+            d++;
+            break;
+
             case '?':
             printf("Error: Unknown flag '-%c' provided\n", optopt);
             return EXIT_FAILURE;
@@ -148,7 +160,7 @@ int main (int argc, char** argv){
     }
 
     // only one flag at a time
-    if (a + r + c > 1){
+    if (a + r + c + d > 1){
         printf("Error: Only one option can be selected at a time\n");
         return EXIT_FAILURE;
     }
@@ -175,6 +187,12 @@ int main (int argc, char** argv){
         char* set_name = strdup(argv[2]);
         int position = atoi(argv[3]);
         remove_from_set(set_name, position);
+        free(set_name);
+    }
+
+    if (d > 0){
+        char* set_name = strdup(argv[2]);
+        delete_set(set_name);
         free(set_name);
     }
 
