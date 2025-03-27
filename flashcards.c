@@ -46,12 +46,9 @@ int file_exists(char* path){
 
 
 /** Checks if the home directory for flashcards exists, otherwise creates it. */
-void home_checker(){    
-    if (dir_exists(get_home_path())){
-        printf("The directory exists\n");
-    } else {
+void home_checker(){
+    if (!dir_exists(get_home_path())){
         mkdir(get_home_path(), 0777);
-        //chmod(get_home_path(), 0777);
     }
 }
 
@@ -68,6 +65,7 @@ int make_new_set(char* name){
 
     printf("Path: %s\n", path);
     FILE *new_file = fopen(path, "w");
+    // add error handeling 
     fclose(new_file);
     return 0;
 }
@@ -87,6 +85,49 @@ int add_to_set(char* set_name, char* key, char* value){
     fclose(file);
 
     return 0;
+}
+
+/** Removes flashcards with give number for set */
+int remove_from_set(char* set_name, int num){
+    //src file 
+    char src[1024];
+    snprintf(src, sizeof(src), "%s/%s", get_home_path(), set_name);
+    strcat(src, ".csv");
+
+    // destination file
+    char dest[1024];
+    snprintf(dest, sizeof(dest), "%s/%s", get_home_path(), "txzf123");
+    strcat(dest, ".csv");
+
+    FILE *src_file = fopen(src, "r");
+    FILE *dest_file = fopen(dest, "w");
+    if (src_file == NULL){
+        printf("Error: Could not open the scource file\n");
+        return -1;
+    }
+
+    if (dest_file == NULL){
+        printf("Erro : Could not open the destination file\n");
+        return -1;
+    }
+
+    int count = 0;
+    char buffer[1024];  
+    while (fgets(buffer, sizeof(buffer), src_file)) {
+        if (num != count){
+            fputs(buffer, dest_file);
+        }
+        count++;
+    }
+
+    fclose(src_file);
+    fclose(dest_file);
+
+    remove(src);
+    strcat(set_name, ".csv");
+    rename(dest, src);
+
+    return 1;
 }
 
 int main (int argc, char** argv){
@@ -113,6 +154,7 @@ int main (int argc, char** argv){
         }
     }
 
+    // only one flag at a time
     if (a + r + c > 1){
         printf("Error: Only one option can be selected at a time\n");
         return EXIT_FAILURE;
@@ -129,7 +171,6 @@ int main (int argc, char** argv){
 
     // a for add 
     if (a > 0){
-        printf("adding");
         char* set_name = strdup(argv[2]);
         char* key = strdup(argv[3]);
         char* value = strdup(argv[4]);
@@ -141,7 +182,10 @@ int main (int argc, char** argv){
 
     // r for remove 
     if (r > 0){
-
+        char* set_name = strdup(argv[2]);
+        int position = atoi(argv[3]);
+        remove_from_set(set_name, position);
+        free(set_name);
     }
 
     return EXIT_SUCCESS;
