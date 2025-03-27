@@ -4,17 +4,12 @@
 #include <sys/stat.h>
 #include <string.h>
 
-/** Card structure*/
-struct card {
-    char* key;
-    char* val;
-};
-
 /** Global for the home path*/
-char home_path[1024];
+//char home_path[1024];
 
 /** Returns the path where the users flashcard sets will be found*/
 char* get_home_path() {
+    static char home_path[1024];
     char* home = getenv("HOME");
     if (home == NULL) {
         return NULL;
@@ -34,6 +29,7 @@ int dir_exists(char* path){
     return 0;
 }
 
+/** Checks if a file exists at the given path */
 int file_exists(char* path){
     struct stat info;
     if (stat(path, &info) == 0 && S_ISREG(info.st_mode)){
@@ -42,8 +38,6 @@ int file_exists(char* path){
 
     return 0;
 }
-
-
 
 /** Checks if the home directory for flashcards exists, otherwise creates it. */
 void home_checker(){
@@ -78,7 +72,7 @@ int add_to_set(char* set_name, char* key, char* value){
 
     FILE *file = fopen(path, "a");
     if (file == NULL) {
-        perror("fopen failed\n");
+        //perror("fopen failed\n");
         return -1;
     }
     fprintf(file, "%s, %s\n", key, value);
@@ -89,18 +83,17 @@ int add_to_set(char* set_name, char* key, char* value){
 
 /** Removes flashcards with give number for set */
 int remove_from_set(char* set_name, int num){
-    //src file 
     char src[1024];
     snprintf(src, sizeof(src), "%s/%s", get_home_path(), set_name);
     strcat(src, ".csv");
 
-    // destination file
     char dest[1024];
     snprintf(dest, sizeof(dest), "%s/%s", get_home_path(), "txzf123");
     strcat(dest, ".csv");
 
     FILE *src_file = fopen(src, "r");
     FILE *dest_file = fopen(dest, "w");
+
     if (src_file == NULL){
         printf("Error: Could not open the scource file\n");
         return -1;
@@ -162,14 +155,12 @@ int main (int argc, char** argv){
 
     home_checker();
 
-    //c for creates
     if (c > 0){
         char* name = strdup(argv[2]);
         make_new_set(name);
         free(name);
     }
 
-    // a for add 
     if (a > 0){
         char* set_name = strdup(argv[2]);
         char* key = strdup(argv[3]);
@@ -180,7 +171,6 @@ int main (int argc, char** argv){
         free(value);
     }
 
-    // r for remove 
     if (r > 0){
         char* set_name = strdup(argv[2]);
         int position = atoi(argv[3]);

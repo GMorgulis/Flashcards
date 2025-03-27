@@ -13,9 +13,6 @@ struct card {
     char* val;
 };
 
-/** Global for the home path */
-extern char home_path[1024];
-
 /** Function prototypes */
 char* get_home_path();
 int dir_exists(char* path);
