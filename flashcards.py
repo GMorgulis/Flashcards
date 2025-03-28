@@ -1,5 +1,8 @@
 import os
 
+def get_home_path():
+    return "flashcard_sets"
+
 def dir_exists(path):
     """Returns True if directory exists, False otherwise."""
     return os.path.isdir(path)
@@ -65,15 +68,12 @@ def delete_set(set_name):
     except FileNotFoundError:
         return -1
 
-def get_home_path():
-    return "flashcard_sets"
+def get_files(directory):
+    file_names = []
+    for entry in os.listdir(directory):
+        # Only add files, skip directories (and '.' or '..' entries)
+        if os.path.isfile(os.path.join(directory, entry)):
+            file_names.append(entry)
+    return file_names
 
-def main():
-    
-    # Check if the home directory exists, otherwise create it
-    home_checker()
 
-
-
-if __name__ == "__main__":
-    main()

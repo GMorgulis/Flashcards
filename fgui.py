@@ -1,49 +1,19 @@
 import tkinter as tk
 from mylist import*
+from helper import *
 import csv
+import sys
 
+if len(sys.argv) != 2:
+    print("Usage: python script.py <argument>")
+    sys.exit(1)
 
-def create_list(filename):
-    # Create an instance of the CircularLinkedList
-    my_list = CircularLinkedList()
-    
-    with open(filename, mode='r') as file:
-        reader = csv.reader(file)
-        
-        # Loop through each row in the CSV
-        for row in reader:
-            if len(row) != 2:
-                continue  # Skip rows that don't have exactly 2 values
-            val1 = row[0]
-            val2 = row[1]
-            my_list.add_node(val1, val2)  # Already supports prev pointer
-    
-    return my_list
+folder = "flashcard_sets/"
+argument = sys.argv[1]
 
-my_list = create_list("flashcard_sets/math.csv")
+my_list = create_list(folder + argument)
 current_node = my_list.head
 trial = current_node.val1
-
-#breaks up the string so that it fits on the screen
-def break_up(input_string):
-    result = []
-    i = 0
-    while i < len(input_string):
-        if i + 50 < len(input_string) and input_string[i + 50] != ' ':
-            j = i + 50
-            while j > i and input_string[j] != ' ':
-                j -= 1
-            if j == i: 
-                result.append(input_string[i:i+50] + '—')
-                i += 50
-            else:
-                result.append(input_string[i:j] + '\n')
-                i = j + 1
-        else:
-            result.append(input_string[i:i+50] + '\n')
-            i += 50
-
-    return ''.join(result)
 
 def update_button():
     global btn2
@@ -82,9 +52,10 @@ def on_btn3_click():
     trial = current_node.val1
     update_button()
 
-
 root = tk.Tk()
-root.geometry("500x200")  # Set window size
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+root.geometry(f"{screen_width}x{screen_height}")
 
 root.rowconfigure(0, weight=0)  
 root.rowconfigure(1, weight=0)  
