@@ -12,24 +12,22 @@ root.geometry(f"{screen_width}x{screen_height}")
 title_label = tk.Label(root, text="My Flashcards", font=("Arial", 24, "bold"))
 title_label.pack(pady=20)
 
-# Create a frame and canvas for scrolling
 frame = tk.Frame(root)
 frame.pack(fill=tk.BOTH, expand=True)
-
 canvas = tk.Canvas(frame)
 scrollbar = tk.Scrollbar(frame, orient=tk.VERTICAL, command=canvas.yview)
-
 scrollable_frame = tk.Frame(canvas)
 scrollable_frame.bind(
     "<Configure>",
     lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
 )
-
 canvas.create_window((250, 0), window=scrollable_frame, anchor="n")  
 canvas.configure(yscrollcommand=scrollbar.set)
 
+
 buttons = []
 flashcards = get_files("flashcard_sets")
+minus_state = 0
 
 plus_button = tk.Button(
     scrollable_frame, text="+", font=("Arial", 16, "normal"), fg="white", bg="blue",
@@ -39,22 +37,26 @@ plus_button.grid(row=0, column=0, pady=(10, 5), padx=10)
 
 minus_button = tk.Button(
     scrollable_frame, text="-", font=("Arial", 16, "normal"), fg="white", bg="red",
-    width=20, height=2, command=lambda: print("Add new flashcard")
+    width=20, height=2, command=lambda: on_minus_click()
 )
 minus_button.grid(row=1, column=0, pady=(10, 5), padx=10)
 
 
 def on_flashcard_click(name):
-    print(f"Opening flashcard: {name}")
-    subprocess.run(['python', 'fgui.py', name])
+    global minus_state
+    if (minus_state == 1):
+        delete_set(name)
+        minus_state = 0
+        redraw_buttons()
+    else:
+        subprocess.run(['python', 'fgui.py', name])
 
 def on_plus_click():
-        # Create a Toplevel window (popup) when the button is clicked
     popup = tk.Toplevel()
-    popup.geometry("300x150")  # Set size of the popup window
-    popup.title("Enter your name")
+    popup.geometry("300x150")  
+    popup.title("Enter set name")
 
-    label = tk.Label(popup, text="Enter your name:")
+    label = tk.Label(popup, text="Enter set name:")
     label.pack(pady=10)
 
     entry = tk.Entry(popup)
@@ -63,15 +65,16 @@ def on_plus_click():
     def save_name():
         global name
         name = entry.get()  
-        print(f"Name saved: {name}")
         popup.destroy() 
         make_new_set(name)
         redraw_buttons()
-        create_buttons
 
     submit_button = tk.Button(popup, text="Submit", command=save_name)
     submit_button.pack(pady=10)
 
+def on_minus_click():
+    global minus_state
+    minus_state = 1 
 
 def redraw_buttons():
     global buttons
@@ -79,7 +82,6 @@ def redraw_buttons():
     for button in buttons:
         button.destroy()
     buttons.clear()  # Clear the list of buttons
-
     create_buttons()
 
 def create_buttons():
