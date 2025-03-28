@@ -31,25 +31,47 @@ canvas.configure(yscrollcommand=scrollbar.set)
 buttons = []
 flashcards = get_files("flashcard_sets")
 
-def on_flashcard_click(name):
-    print(f"Opening flashcard: {name}")
-    subprocess.run(['python', 'fgui.py', name])
-
-def on_plus_click():
-    make_new_set("pest")
-
 plus_button = tk.Button(
     scrollable_frame, text="+", font=("Arial", 16, "normal"), fg="white", bg="blue",
     width=20, height=2, command=lambda: on_plus_click()
 )
 plus_button.grid(row=0, column=0, pady=(10, 5), padx=10)
 
-
 minus_button = tk.Button(
     scrollable_frame, text="-", font=("Arial", 16, "normal"), fg="white", bg="red",
     width=20, height=2, command=lambda: print("Add new flashcard")
 )
 minus_button.grid(row=1, column=0, pady=(10, 5), padx=10)
+
+
+def on_flashcard_click(name):
+    print(f"Opening flashcard: {name}")
+    subprocess.run(['python', 'fgui.py', name])
+
+def on_plus_click():
+        # Create a Toplevel window (popup) when the button is clicked
+    popup = tk.Toplevel()
+    popup.geometry("300x150")  # Set size of the popup window
+    popup.title("Enter your name")
+
+    label = tk.Label(popup, text="Enter your name:")
+    label.pack(pady=10)
+
+    entry = tk.Entry(popup)
+    entry.pack(pady=10)
+
+    def save_name():
+        global name
+        name = entry.get()  
+        print(f"Name saved: {name}")
+        popup.destroy() 
+        make_new_set(name)
+        redraw_buttons()
+        create_buttons
+
+    submit_button = tk.Button(popup, text="Submit", command=save_name)
+    submit_button.pack(pady=10)
+
 
 def redraw_buttons():
     global buttons
@@ -61,6 +83,7 @@ def redraw_buttons():
     create_buttons()
 
 def create_buttons():
+    flashcards = get_files("flashcard_sets")
     global buttons
     row = 0
     col = 1
@@ -81,9 +104,7 @@ def create_buttons():
 
 create_buttons()
 
-# Pack scrollbar and canvas
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-# Run the application
 root.mainloop()
