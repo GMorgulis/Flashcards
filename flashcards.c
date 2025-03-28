@@ -8,15 +8,8 @@
 //char home_path[1024];
 
 /** Returns the path where the users flashcard sets will be found*/
-char* get_home_path() {
-    static char home_path[1024];
-    char* home = getenv("HOME");
-    if (home == NULL) {
-        return NULL;
-    }
-
-    snprintf(home_path, sizeof(home_path), "%s/%s", home, "flashcard_sets");
-    return home_path;
+char* sets_hub() {
+    return "flashcard_sets";
 }
 
 /** Returns 1 if directory exists, 0 otherwise. */
@@ -123,6 +116,7 @@ int remove_from_set(char* set_name, int num){
     return 0;
 }
 
+/** Removes set of flashcards. */
 int delete_set(char* set_name){
     char src[1024];
     snprintf(src, sizeof(src), "%s/%s", get_home_path(), set_name);
