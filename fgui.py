@@ -16,7 +16,7 @@ def create_list(filename):
                 continue  # Skip rows that don't have exactly 2 values
             val1 = row[0]
             val2 = row[1]
-            my_list.add_node(val1, val2)
+            my_list.add_node(val1, val2)  # Already supports prev pointer
     
     return my_list
 
@@ -45,18 +45,8 @@ def break_up(input_string):
 
     return ''.join(result)
 
-
-
-def on_btn1_click():
-    print("btn1 is clicked")
-
-def on_btn2_click():
-    global trial, btn2
-    if (trial == current_node.val1):
-        trial = current_node.val2
-    else:
-        trial = current_node.val1
-    
+def update_button():
+    global btn2
     btn2.destroy()
     btn2 = tk.Button(root, 
                  text=break_up(trial), 
@@ -67,9 +57,30 @@ def on_btn2_click():
                  )
     btn2.grid(row=1, column=1, padx=5, pady=10, sticky="ew")
 
+#click prev button
+def on_btn1_click():
+    global current_node, btn2, trial
+    current_node = current_node.prev
+    trial = current_node.val1
+    update_button()
 
+#click flashcard button
+def on_btn2_click():
+    global trial, btn2
+    if (trial == current_node.val1):
+        trial = current_node.val2
+    else:
+        trial = current_node.val1
+    
+    btn2.destroy()
+    update_button()
+
+# click new button
 def on_btn3_click():
-    print("btn3 is clicked")
+    global current_node, btn2, trial
+    current_node = current_node.next
+    trial = current_node.val1
+    update_button()
 
 
 root = tk.Tk()
