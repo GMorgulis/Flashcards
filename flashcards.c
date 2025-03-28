@@ -4,9 +4,6 @@
 #include <sys/stat.h>
 #include <string.h>
 
-/** Global for the home path*/
-//char home_path[1024];
-
 /** Returns the path where the users flashcard sets will be found*/
 char* sets_hub() {
     return "flashcard_sets";
