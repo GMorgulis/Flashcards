@@ -4,9 +4,8 @@ import subprocess
 
 root = tk.Tk()
 root.title("My Flashcards")
-screen_width = root.winfo_screenwidth()
-screen_height = root.winfo_screenheight()
-root.geometry(f"{screen_width}x{screen_height}")
+root.geometry("500x500")
+root.state("zoomed")
 
 
 title_label = tk.Label(root, text="My Flashcards", font=("Arial", 24, "bold"))
@@ -30,18 +29,32 @@ flashcards = get_files("flashcard_sets")
 minus_state = 0
 
 plus_button = tk.Button(
-    scrollable_frame, text="+", font=("Arial", 16, "normal"), fg="white", bg="blue",
+    scrollable_frame, text="Create Set", font=("Arial", 16, "normal"), fg="white", bg="blue",
     width=20, height=2, command=lambda: on_plus_click()
 )
 plus_button.grid(row=0, column=0, pady=(10, 5), padx=10)
 
 minus_button = tk.Button(
-    scrollable_frame, text="-", font=("Arial", 16, "normal"), fg="white", bg="red",
+    scrollable_frame, text="Delete Set", font=("Arial", 16, "normal"), fg="white", bg="red",
     width=20, height=2, command=lambda: on_minus_click()
 )
 minus_button.grid(row=1, column=0, pady=(10, 5), padx=10)
 
+edit_button = tk.Button(
+    scrollable_frame, text="Edit Set", font=("Arial", 16, "normal"), fg="white", bg="green",
+    width=20, height=2, command=lambda: on_edit_click()
+)
+edit_button.grid(row=2, column=0, pady=(10, 5), padx=10)
 
+rename_button = tk.Button(
+    scrollable_frame, text="Rename Set", font=("Arial", 16, "normal"), fg="white", bg="orange",
+    width=20, height=2, command=lambda: on_edit_click()
+)
+rename_button.grid(row=3, column=0, pady=(10, 5), padx=10)
+
+def on_edit_click(name):
+    print("hello world")
+    
 def on_flashcard_click(name):
     global minus_state
     if (minus_state == 1):
@@ -68,9 +81,12 @@ def on_plus_click():
         popup.destroy() 
         make_new_set(name)
         redraw_buttons()
+        subprocess.run(['python', 'egui.py', name])
 
     submit_button = tk.Button(popup, text="Submit", command=save_name)
     submit_button.pack(pady=10)
+
+
 
 def on_minus_click():
     global minus_state

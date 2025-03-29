@@ -55,7 +55,9 @@ def on_btn3_click():
 root = tk.Tk()
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
-root.geometry(f"{screen_width}x{screen_height}")
+root.geometry("500x500")
+root.state("zoomed")
+
 
 root.rowconfigure(0, weight=0)  
 root.rowconfigure(1, weight=0)  
