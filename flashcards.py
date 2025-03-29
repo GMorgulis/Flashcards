@@ -1,5 +1,7 @@
 import os
 
+'''Some libary metods for flashcards. Not all of them are currently in use'''
+
 def get_home_path():
     return "flashcard_sets"
 
@@ -61,7 +63,7 @@ def remove_from_set(set_name, num):
 
 def delete_set(set_name):
     """Removes a set of flashcards."""
-    src = os.path.join(get_home_path(), f"{set_name}.csv")
+    src = os.path.join(get_home_path(), f"{set_name}")
     try:
         os.remove(src)
         return 0

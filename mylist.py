@@ -1,5 +1,6 @@
 import csv
 
+'''Code for the circular linked list that will be used in the main loop of the flaschards'''
 
 class Node:
     def __init__(self, val1, val2):

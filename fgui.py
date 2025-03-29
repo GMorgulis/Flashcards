@@ -1,8 +1,9 @@
 import tkinter as tk
 from mylist import*
 from helper import *
-import csv
 import sys
+
+''' Creates the GUI for actually using the flashcards for studyings'''
 
 if len(sys.argv) != 2:
     print("Usage: python script.py <argument>")
